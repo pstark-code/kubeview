@@ -2,7 +2,7 @@
 # Variables
 SERVER_DIR := ./cmd
 FRONTEND_DIR := ./web/client
-VERSION := 0.1.31
+VERSION := 0.1.32
 BUILD_INFO := Manual build from makefile
 # Things you don't want to change
 REPO_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
@@ -10,7 +10,7 @@ GOLINT_PATH := $(REPO_DIR)/bin/golangci-lint
 
 # Most likely want to override these when calling `make image`
 IMAGE_REG ?= ghcr.io
-IMAGE_REPO ?= benc-uk/kubeview
+IMAGE_REPO ?= ctr49/kubeview
 IMAGE_TAG ?= latest
 IMAGE_PREFIX := $(IMAGE_REG)/$(IMAGE_REPO)
 

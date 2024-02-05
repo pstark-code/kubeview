@@ -7,31 +7,69 @@ on:
     types: [published]
 
 env:
-  DOCKER_USER: bencuk
-  IMAGE_NAME: kubeview
+  IMAGE_REG: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 permissions:
   packages: write
   contents: write
 
 jobs:
-  release:
-    name: Release image & chart
+  ci-build:
+    name: Code Check & CI build
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      # Checkout code from repo
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
 
-      # Build the image taged with the release tag, this is the semver taged release of the image
-      - name: Build the Docker image
-        run: docker build . --file ./build/Dockerfile --build-arg version="${{ github.event.release.tag_name }}" --build-arg buildInfo="GitHub release build dated:$(date -I)" --tag ghcr.io/$GITHUB_ACTOR/$IMAGE_NAME:${{ github.event.release.tag_name }}
+      # Ensures Go is configured properly
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+          check-latest: true
 
-      # Push to GHCR
-      - name: Push to Github registry
+      # Ensures Node is configured properly
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          check-latest: true
+
+      # Build static content
+      - name: NPM Install
+        uses: bahmutov/npm-install@v1
+        with:
+          working-directory: web/client
+
+
+      - name: NPM Build
+        working-directory: web/client
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-          docker push ghcr.io/$GITHUB_ACTOR/$IMAGE_NAME:${{ github.event.release.tag_name }}
+          npx vue-cli-service build
+          cp -ax dist ../../cmd/server/kodata
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
+          NODE_ENV: production
 
+
+      - name: Install ko
+        uses: ko-build/setup-ko@v0.6
+
+
+      - name: Run ko
+        run: ko build --bare --tags latest --tags ${{ github.event.release.tag_name }} ./cmd/server
+        env:
+          KO_DOCKER_REPO: ${{ env.IMAGE_REG }}/${{ env.IMAGE_NAME }}
+          KO_DEFAULTPLATFORMS: all
+          GOFLAGS: "-ldflags=-X=main.version=${{ github.event.release.tag_name }}"
+          
+      # Cleanup
+      - name: Cleanup output directories
+        run: rm -rf cmd/server/kodata web/client/dist
+          
       # Package chart as tgz file
       - name: Package Helm chart
         run: helm package kubeview
@@ -47,6 +85,7 @@ jobs:
         uses: mikeal/publish-to-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: 'main'
 
       # Also attach the packaged tgz to the release in GitHub
       - name: Upload Helm chart to release

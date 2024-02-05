@@ -5,14 +5,13 @@ name: CI Build
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 env:
-  IMAGE_REG: ghcr.io
-  IMAGE_NAME: kubeview
-  IMAGE_TAG: latest
+  IMAGE_REG: ko.local
+  IMAGE_NAME: ${{ github.repository }}
 
 permissions:
   packages: write
@@ -25,24 +24,48 @@ jobs:
     steps:
       # Checkout code from repo
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       # Ensures Go is configured properly
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v5
         with:
-          go-version: "^1.17.2"
+          go-version: 'stable'
+          check-latest: true
 
       # Validate code
-      - name: Check code for linting and format errors
-        run: make lint
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@master
+        with:
+          skip-cache: true
+          working-directory: .
+          args: --timeout=3m --modules-download-mode=mod
 
-      # Build image
-      - name: Build the container image
-        run: make image IMAGE_REPO=$GITHUB_ACTOR/$IMAGE_NAME
-
-      # Only when pushing to default branch (e.g. master or main), then push image to registry
-      - name: Push to container registry
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      # Ensures Node is configured properly
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          check-latest: true
+      # Build static content
+      - name: NPM Install
+        uses: bahmutov/npm-install@v1
+        with:
+          working-directory: web/client
+      - name: NPM Build
+        working-directory: web/client
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login $IMAGE_REG -u $GITHUB_ACTOR --password-stdin
-          make push IMAGE_REPO=$GITHUB_ACTOR/$IMAGE_NAME
+          npx vue-cli-service build
+          cp -ax dist ../../cmd/server/kodata
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
+          NODE_ENV: production
+      - name: Install ko
+        uses: ko-build/setup-ko@v0.6
+      - name: Run ko
+        run: ko build --bare ./cmd/server
+        env:
+          KO_DOCKER_REPO: ${{ env.IMAGE_REG }}/${{ env.IMAGE_NAME }}
+          KO_DEFAULTPLATFORMS: all
+
+      # Cleanup
+      - name: Cleanup output directories
+        run: rm -rf cmd/server/kodata web/client/dist

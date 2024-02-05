@@ -15,7 +15,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/benc-uk/go-starter/pkg/envhelper"
+	"github.com/benc-uk/go-rest-api/pkg/env"
+
 	"github.com/gorilla/mux"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -45,10 +46,8 @@ type scrapeData struct {
 	Secrets                []apiv1.Secret                `json:"secrets"`
 }
 
-//
 // Simple health check endpoint, returns 204 when healthy
-//
-func routeHealthCheck(resp http.ResponseWriter, req *http.Request) {
+func routeHealthCheck(resp http.ResponseWriter, _ *http.Request) {
 	if healthy {
 		resp.WriteHeader(http.StatusNoContent)
 		return
@@ -56,9 +55,7 @@ func routeHealthCheck(resp http.ResponseWriter, req *http.Request) {
 	resp.WriteHeader(http.StatusServiceUnavailable)
 }
 
-//
 // Return status information data
-//
 func routeStatus(resp http.ResponseWriter, req *http.Request) {
 	type status struct {
 		Healthy    bool   `json:"healthy"`
@@ -103,10 +100,8 @@ func routeStatus(resp http.ResponseWriter, req *http.Request) {
 	}
 }
 
-//
 // Return list of all namespaces in cluster
-//
-func routeGetNamespaces(resp http.ResponseWriter, req *http.Request) {
+func routeGetNamespaces(resp http.ResponseWriter, _ *http.Request) {
 	ctx := context.Background()
 	namespaces, err := clientset.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
 	if err != nil {
@@ -122,9 +117,7 @@ func routeGetNamespaces(resp http.ResponseWriter, req *http.Request) {
 	}
 }
 
-//
 // Return aggregated data from loads of different Kubernetes object types
-//
 func routeScrapeData(resp http.ResponseWriter, req *http.Request) {
 	params := mux.Vars(req)
 	namespace := params["ns"]
@@ -259,11 +252,9 @@ func routeScrapeData(resp http.ResponseWriter, req *http.Request) {
 	}
 }
 
-//
 // Simple config endpoint, returns NAMESPACE_SCOPE var to front end
-//
-func routeConfig(resp http.ResponseWriter, req *http.Request) {
-	nsScope := envhelper.GetEnvString("NAMESPACE_SCOPE", "*")
+func routeConfig(resp http.ResponseWriter, _ *http.Request) {
+	nsScope := env.GetEnvString("NAMESPACE_SCOPE", "*")
 	conf := Config{NamespaceScope: nsScope}
 
 	configJSON, _ := json.Marshal(conf)
@@ -275,9 +266,7 @@ func routeConfig(resp http.ResponseWriter, req *http.Request) {
 	}
 }
 
-//
 // Filter a slice of Secrets
-//
 func filterSecrets(secretList []apiv1.Secret, f func(apiv1.Secret) bool) []apiv1.Secret {
 	newSlice := make([]apiv1.Secret, 0)
 	for _, secret := range secretList {

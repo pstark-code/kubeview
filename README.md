@@ -1,5 +1,5 @@
 # KubeView
-<img src="https://github.com/benc-uk/kubeview/raw/master/web/client/src/assets/logo.png" style="float:right">
+<img src="https://github.com/ctr49/kubeview/raw/main/web/client/src/assets/logo.png" style="float:right">
 Kubernetes cluster visualiser and visual explorer
 
 KubeView displays what is happening inside a Kubernetes cluster (or single namespace), it maps out the API objects and how they are interconnected. Data is fetched real-time from the Kubernetes API. The status of some objects (Pods, ReplicaSets, Deployments) is colour coded red/green to represent their status and health
@@ -18,9 +18,9 @@ Currently displays the following Kubernetes objects:
 - ConfigMaps
 
 ### Status 
-[![](https://img.shields.io/github/workflow/status/benc-uk/kubeview/Build%20Dockerhub%20Image?style=for-the-badge&logo=github)](https://github.com/benc-uk/kubeview/actions?query=workflow%3A%22Build+Dockerhub+Image%22)
-[![](https://img.shields.io/github/last-commit/benc-uk/kubeview?style=for-the-badge&logo=github)](https://github.com/benc-uk/kubeview/commits/master)
-[![](https://img.shields.io/github/v/release/benc-uk/kubeview?style=for-the-badge&logo=github)](https://github.com/benc-uk/kubeview/releases)
+[![](https://img.shields.io/github/workflow/status/ctr49/kubeview/Build%20Dockerhub%20Image?style=for-the-badge&logo=github)](https://github.com/ctr49/kubeview/actions?query=workflow%3A%22Build+Dockerhub+Image%22)
+[![](https://img.shields.io/github/last-commit/ctr49/kubeview?style=for-the-badge&logo=github)](https://github.com/ctr49/kubeview/commits/main)
+[![](https://img.shields.io/github/v/release/ctr49/kubeview?style=for-the-badge&logo=github)](https://github.com/ctr49/kubeview/releases)
 
 Note. No secrets are exposed by the Kubeview API, values are redacted and replaced with `__VALUE REDACTED__` before being sent.
 
@@ -50,14 +50,14 @@ This projects follows the 'Standard Go Project Layout' directory structure and n
 
 
 # Docker Image
-Builds of the Docker image are hosted publicly on GitHub Container Registry here: https://github.com/users/benc-uk/packages/container/package/kubeview
+Builds of the Docker image are hosted publicly on GitHub Container Registry here: https://github.com/users/ctr49/packages/container/package/kubeview
 
 - The `latest` tag is likely to be unstable   
-- Versioned tags are build and pushed in sync with released versions of this repo, e.g. `docker pull ghcr.io/benc-uk/kubeview:0.1.17`
+- Versioned tags are build and pushed in sync with released versions of this repo, e.g. `docker pull ghcr.io/ctr49/kubeview:0.1.17`
 
 
 # Helm Chart
-Helm chart called 'kubeview' is provided in the [charts](./charts) directory to help deploy and install KubeView into your cluster. The chart is also available in packaged form, [in the releases section](https://github.com/benc-uk/kubeview/releases)
+Helm chart called 'kubeview' is provided in the [charts](./charts) directory to help deploy and install KubeView into your cluster. The chart is also available in packaged form, [in the releases section](https://github.com/ctr49/kubeview/releases)
 
 Use the supplied sample `example-values.yaml` file (copy it to a new name, e.g. `myvalues.yaml`) to configure how to deploy KubeView. The main choice is if you want to expose the service via an ingress `ingress.enabled: true` or a load-balancer service `ingress.enabled: false`
 
@@ -88,4 +88,4 @@ helm install kubeview ./kubeview -f myvalues.yaml
 - Settings with detail levels
 
 ## Change Log
-[See releases](https://github.com/benc-uk/kubeview/releases)
+[See releases](https://github.com/ctr49/kubeview/releases)

@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/benc-uk/go-starter/pkg/envhelper"
+	"github.com/benc-uk/go-rest-api/pkg/env"
 
 	"github.com/gorilla/mux"
 	_ "github.com/joho/godotenv/autoload" // Autoloads .env file if it exists
@@ -30,16 +30,14 @@ var (
 	clientset *kubernetes.Clientset // Clientset is global because I don't care
 )
 
-//
 // Main entry point, will start HTTP service
-//
 func main() {
 	log.SetOutput(os.Stdout) // Personal preference on log output
 	log.Printf("### Kubeview v%v starting...", version)
 
 	// Port to listen on, change the default as you see fit
-	serverPort := envhelper.GetEnvInt("PORT", 8000)
-	inCluster := envhelper.GetEnvBool("IN_CLUSTER", false)
+	serverPort := env.GetEnvInt("PORT", 8000)
+	inCluster := env.GetEnvBool("IN_CLUSTER", false)
 
 	log.Println("### Connecting to Kubernetes...")
 	var kubeConfig *rest.Config
@@ -80,7 +78,7 @@ func main() {
 	router.HandleFunc("/api/config", routeConfig)
 
 	// Serve the frontend Vue.js SPA
-	staticDirectory := envhelper.GetEnvString("STATIC_DIR", "./frontend")
+	staticDirectory := env.GetEnvString("KO_DATA_PATH", "./kodata")
 	spa := spaHandler{staticPath: staticDirectory, indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
 
@@ -94,10 +92,8 @@ func main() {
 	}
 }
 
-//
 // Log all HTTP requests with client address, method and request URI
 // Plus a cheap and dirty CORS enabler
-//
 func starterMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(resp http.ResponseWriter, req *http.Request) {
 		resp.Header().Set("Access-Control-Allow-Origin", "*")

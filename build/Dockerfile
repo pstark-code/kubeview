@@ -1,14 +1,14 @@
 # ================================================================================================
 # === Stage 1: Build and bundle the Vue.js app with Vue CLI 3 ====================================
 # ================================================================================================
-FROM node:16-alpine as vue-build
+FROM node:lts-alpine as vue-build
 ARG sourceDir="web/client"
 
 WORKDIR /build
 
 # Install all the Vue.js dev tools & CLI, and our app dependencies 
 COPY ${sourceDir}/package*.json ./
-RUN npm install --silent
+RUN npm install
 
 # Copy in the Vue.js app source
 COPY ${sourceDir}/.env.production .
@@ -17,14 +17,15 @@ COPY ${sourceDir}/public ./public
 COPY ${sourceDir}/src ./src
 
 # Carry out Vue CLI build & bundle, this will output to ./dist
+ARG NODE_OPTIONS="--openssl-legacy-provider"
 RUN npm run build
 
 # ================================================================================================
 # === Stage 2: Build Golang API server and host for Vue app ======================================
 # ================================================================================================
-FROM golang:1.17-alpine as go-build
+FROM golang:1.22-alpine as go-build
 WORKDIR /build
-ARG GO_PACKAGE="github.com/benc-uk/kubeview/cmd/server"
+ARG GO_PACKAGE="github.com/ctr49/kubeview/cmd/server"
 ARG VERSION="0.0.0"
 ARG BUILD_INFO="Not set"
 
