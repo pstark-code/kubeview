@@ -1,3 +1,20 @@
 apiVersion: v1
 entries:
   kubeview:
+  - apiVersion: v2
+    appVersion: 0.1.32
+    created: "2024-02-08T00:06:03.347760942Z"
+    description: Kubernetes cluster visualiser and visual explorer
+    digest: b0802329548c929952ed4276e7b1f7479d71490aab27dfa4e4b4ead679d570fb
+    home: https://github.com/ctr49/kubeview
+    icon: https://raw.githubusercontent.com/ctr49/kubeview/master/web/client/public/favicon.png
+    maintainers:
+    - name: Ben Coleman
+      url: https://benc.dev
+    name: kubeview
+    sources:
+    - https://github.com/ctr49/kubeview
+    urls:
+    - kubeview-0.1.32.tgz
+    version: 0.1.32
+generated: "2024-02-08T00:06:03.347261587Z"
