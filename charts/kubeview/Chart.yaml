@@ -1,14 +1,14 @@
 name: kubeview
 apiVersion: v2
-version: 0.1.32
-appVersion: "0.1.32"
+version: 0.2.0
+appVersion: "0.2.0"
 
 description: Kubernetes cluster visualiser and visual explorer
 maintainers:
   - name: Ben Coleman
     url: https://benc.dev
 
-icon: https://raw.githubusercontent.com/ctr49/kubeview/master/web/client/public/favicon.png
-home: https://github.com/ctr49/kubeview
+icon: https://raw.githubusercontent.com/pstark-code/kubeview/master/web/client/public/favicon.png
+home: https://github.com/pstark-code/kubeview
 sources:
-  - https://github.com/ctr49/kubeview
+  - https://github.com/pstark-code/kubeview
