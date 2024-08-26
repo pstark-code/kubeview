@@ -17,4 +17,20 @@ entries:
     urls:
     - https://github.com/pstark-code/kubeview/releases/download/kubeview-0.2.0/kubeview-0.2.0.tgz
     version: 0.2.0
-generated: "2024-08-26T23:14:48.462952011Z"
+  - apiVersion: v2
+    appVersion: 0.1.32
+    created: "2024-02-08T00:06:03.347760942Z"
+    description: Kubernetes cluster visualiser and visual explorer
+    digest: b0802329548c929952ed4276e7b1f7479d71490aab27dfa4e4b4ead679d570fb
+    home: https://github.com/pstark-code/kubeview
+    icon: https://raw.githubusercontent.com/pstark-code/kubeview/master/web/client/public/favicon.png
+    maintainers:
+    - name: Ben Coleman
+      url: https://benc.dev
+    name: kubeview
+    sources:
+    - https://github.com/pstark-code/kubeview
+    urls:
+    - https://github.com/pstark-code/kubeview/releases/download/kubeview-0.1.32/kubeview-0.1.32.tgz
+    version: 0.1.32
+generated: "2024-08-26T23:23:48.462952011Z"
