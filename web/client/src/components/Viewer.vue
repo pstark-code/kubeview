@@ -497,8 +497,7 @@ export default {
             continue
           }
           for (let path of rule.http.paths || []) {
-            let serviceName = path.backend.serviceName
-            //this.addLink(ingress.metadata.uid, `endpoint_${serviceName}`)
+            let serviceName = (path.backend.serviceName) ? path.backend.serviceName : path.backend.service.name
             this.addLink(`Ingress_${ingress.metadata.name}`, `Service_${serviceName}`)
           }
         }
