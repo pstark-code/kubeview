@@ -25,7 +25,7 @@ RUN npm run build
 # ================================================================================================
 FROM golang:1.22-alpine as go-build
 WORKDIR /build
-ARG GO_PACKAGE="github.com/ctr49/kubeview/cmd/server"
+ARG GO_PACKAGE="github.com/pstark-code/kubeview/cmd/server"
 ARG VERSION="0.0.0"
 ARG BUILD_INFO="Not set"
 

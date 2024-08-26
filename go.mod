@@ -1,4 +1,4 @@
-module github.com/ctr49/kubeview
+module github.com/pstark-code/kubeview
 
 go 1.22
 

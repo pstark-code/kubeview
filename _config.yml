@@ -4,18 +4,18 @@
 #
 
 title: "KubeView"
-remote_theme: benc-uk/theme-msdark
+# remote_theme: benc-uk/theme-msdark
 favicon: /web/client/src/assets/logo.png
 buttons:
   - b0:
     text: Main Docs
-    href: /
+    href: /kubeview/
   - b1:
     text: Server
-    href: /cmd/server
+    href: /kubeview/cmd/server
   - b2:
     text: Frontend
-    href: /web/client
+    href: /kubeview/web/client
   - b3:
     text: Helm
-    href: /charts
+    href: /kubeview/charts
